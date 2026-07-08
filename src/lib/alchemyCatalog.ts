@@ -276,6 +276,7 @@ export const ALCHEMY_CATALOG: AlchemyEntry[] = [
       "Individual cavity molds are strongly preferred over loaf molds for salt bars, since cutting a fully hardened salt loaf can crack or crumble it.",
       "A visible white bloom of salt crystals on the surface (not to be confused with soda ash) is cosmetic and can be steamed or wiped off after cure.",
       "Because this is a hard-working coconut-heavy bar, expect a mild but expected 'harshness' flag in any safety analysis — that's inherent to the style, not a formulation error, when balanced by 18% superfat.",
+      "The analyzer will also raise an 'abrasive load' note — that is by design: the salt is what gives a salt bar its gentle exfoliating scrub. Dissolve the salt fully into the lye water for a smoother bar, or add it at trace for more texture.",
     ],
     glossary: [
       { term: "salting-out", definition: "Using dissolved salt's ionic strength to compact soap into a denser, harder structure." },

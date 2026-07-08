@@ -5,13 +5,17 @@
 
 import assert from "node:assert/strict";
 import { SafetySeverity } from "../types";
-import { ALCHEMY_CATALOG } from "./alchemyCatalog";
+import { ALCHEMY_CATALOG, ALCHEMY_CATALOG_VERSION } from "./alchemyCatalog";
 import { compileRecipeDraft, executeSoapBytecode, INGREDIENT_CATALOG } from "./soapEngine";
 
 const DIFFICULTIES = ["beginner", "intermediate", "advanced"];
 const KINDS = ["recipe", "technique"];
 
 assert.ok(ALCHEMY_CATALOG.length > 0, "ALCHEMY_CATALOG must not be empty");
+assert.ok(
+  typeof ALCHEMY_CATALOG_VERSION === "string" && ALCHEMY_CATALOG_VERSION.length > 0,
+  "ALCHEMY_CATALOG_VERSION must be a non-empty string",
+);
 
 const seenIds = new Set<string>();
 
@@ -25,6 +29,16 @@ for (const entry of ALCHEMY_CATALOG) {
   assert.ok(Array.isArray(entry.steps) && entry.steps.length > 0, `${entry.id}: steps must be a non-empty array`);
   assert.ok(Array.isArray(entry.safety), `${entry.id}: safety must be an array`);
 
+  for (const [i, step] of entry.steps.entries()) {
+    assert.ok(typeof step.title === "string" && step.title.length > 0, `${entry.id}: step ${i} title must be non-empty`);
+    assert.ok(typeof step.detail === "string" && step.detail.length > 0, `${entry.id}: step ${i} detail must be non-empty`);
+  }
+
+  for (const g of entry.glossary ?? []) {
+    assert.ok(typeof g.term === "string" && g.term.trim().length > 0, `${entry.id}: glossary term must be non-empty`);
+    assert.ok(typeof g.definition === "string" && g.definition.length > 0, `${entry.id}: glossary definition for "${g.term}" must be non-empty`);
+  }
+
   assert.ok(!seenIds.has(entry.id), `duplicate entry id: ${entry.id}`);
   seenIds.add(entry.id);
 
@@ -32,6 +46,10 @@ for (const entry of ALCHEMY_CATALOG) {
     assert.ok(entry.starterDraft, `${entry.id}: recipe entries must have a starterDraft`);
   } else {
     assert.ok(!("starterDraft" in entry), `${entry.id}: technique entries must not have a starterDraft`);
+    assert.ok(
+      Array.isArray(entry.appliesTo) && entry.appliesTo.length > 0,
+      `${entry.id}: technique entries must declare a non-empty appliesTo`,
+    );
   }
 }
 
