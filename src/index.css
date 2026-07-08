@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Instrument graphite — cool, not warm */
+  --color-ink: #0c0f14;
+  --color-ink-2: #141a23;
+  --color-ink-3: #1d2531;
+  --color-ink-4: #2a333f;
+
+  /* Cool workspace paper — deliberately not cream/beige */
+  --color-paper: #eceef1;
+  --color-surface: #ffffff;
+  --color-line: #d7dce3;
+  --color-line-2: #e5e8ed;
+  --color-line-dk: #29313d;
+
+  /* Signature: caustic lye lime */
+  --color-caustic: #c7f03d;
+  --color-caustic-dim: #97b82e;
+
+  /* Safety semaphore — content, not decoration */
+  --color-warn: #ff8a1e;
+  --color-danger: #ff3b30;
+  --color-cool: #5aa9e6;
+
+  --color-mute: #6b7480;
+  --color-mute-2: #8b95a3;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+  /* Numeric figures always tabular so columns of data don't jitter */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+  ::selection {
+    background: var(--color-caustic);
+    color: var(--color-ink);
+  }
+  *:focus-visible {
+    outline: 2px solid var(--color-caustic);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* Wide engineered display lockup */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+  }
+  /* Faint engineering grid on the light workspace */
+  .bench-grid {
+    background-image:
+      linear-gradient(var(--color-line-2) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-line-2) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -1px -1px;
+  }
+  /* Instrument panel: hairline grid over graphite */
+  .instrument-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .caustic-glow {
+    text-shadow: 0 0 18px rgba(199, 240, 61, 0.45);
+  }
+  .scanline {
+    position: relative;
+    overflow: hidden;
+  }
+  .scanline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-caustic), transparent);
+    opacity: 0.5;
+    animation: scan 5.5s linear infinite;
+  }
+  @keyframes scan {
+    0% { transform: translateY(0); opacity: 0; }
+    8% { opacity: 0.6; }
+    92% { opacity: 0.6; }
+    100% { transform: translateY(320px); opacity: 0; }
+  }
+  .tick-in {
+    animation: tickIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes tickIn {
+    from { transform: translateX(-6px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  /* thin instrument scrollbar */
+  .scroll-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scroll-thin::-webkit-scrollbar-track { background: transparent; }
+  .scroll-thin::-webkit-scrollbar-thumb { background: var(--color-ink-4); border-radius: 0; }
+  .scroll-thin-dark::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scroll-thin-dark::-webkit-scrollbar-track { background: transparent; }
+  .scroll-thin-dark::-webkit-scrollbar-thumb { background: var(--color-line); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanline::after,
+  .tick-in { animation: none !important; }
+  * { transition-duration: 0.01ms !important; }
+}
