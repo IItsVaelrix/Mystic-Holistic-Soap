@@ -9,8 +9,9 @@ import { RecipeDraft, InventoryItem, AlkaliType } from "./types";
 import RecipeBuilder from "./components/RecipeBuilder";
 import InventoryManager from "./components/InventoryManager";
 import ActivityLog from "./components/ActivityLog";
+import AlchemyLab from "./components/AlchemyLab";
 
-type Tab = "formulator" | "inventory" | "activity";
+type Tab = "formulator" | "alchemy" | "inventory" | "activity";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>("formulator");
@@ -72,6 +73,13 @@ export default function App() {
       additives: [],
     };
     setSelectedRecipe(newRecipe);
+    setActiveTab("formulator");
+  };
+
+  const handleLoadStarter = (draft: RecipeDraft) => {
+    triggerHaptic();
+    // clone so edits in the Formulator never mutate the shared catalog object
+    setSelectedRecipe(structuredClone(draft));
     setActiveTab("formulator");
   };
 
@@ -202,6 +210,7 @@ export default function App() {
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode; badge?: number }[] = [
     { id: "formulator", label: "Formulate", icon: <Layers className="w-4 h-4" /> },
+    { id: "alchemy", label: "Alchemy", icon: <FlaskConical className="w-4 h-4" /> },
     { id: "inventory", label: "Inventory", icon: <Package className="w-4 h-4" />, badge: lowStockCount || undefined },
     { id: "activity", label: "Activity", icon: <ScrollText className="w-4 h-4" /> },
   ];
@@ -346,6 +355,8 @@ export default function App() {
               )}
             </div>
           </div>
+        ) : activeTab === "alchemy" ? (
+          <AlchemyLab onLoadStarter={handleLoadStarter} />
         ) : activeTab === "inventory" ? (
           <div className="flex-1 overflow-y-auto scroll-thin-dark bench-grid p-6">
             <InventoryManager inventory={inventory} onAddStock={handleAddStock} onUpdateStock={handleUpdateStock} onDeleteStock={handleDeleteStock} />
