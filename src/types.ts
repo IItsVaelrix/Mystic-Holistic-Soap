@@ -489,6 +489,49 @@ export interface IngredientRecommendation {
   requiresUserConfirmation: boolean;
 }
 
+// ── Alchemy (tutorial library) ────────────────────────────────────────────
+export type AlchemyKind = "recipe" | "technique";
+export type AlchemyDifficulty = "beginner" | "intermediate" | "advanced";
+
+export interface GlossaryTerm {
+  term: string;        // e.g. "trace"
+  definition: string;  // plain-language definition shown on hover/tap
+}
+
+export interface AlchemyStep {
+  title: string;
+  detail: string;      // plain-language instruction a first-timer can follow
+  proNote?: string;    // collapsible: precision/technique detail for pros
+  caution?: string;    // inline safety cue for this step
+}
+
+export interface AlchemyEntryBase {
+  id: string;
+  kind: AlchemyKind;
+  title: string;
+  summary: string;              // one-line plain-language hook (list view)
+  difficulty: AlchemyDifficulty;
+  overview: string;             // jargon-free "what & why", always visible
+  steps: AlchemyStep[];
+  chemistry?: string;           // collapsible deep-dive for professionals
+  proTips?: string[];           // collapsible advanced pointers
+  glossary?: GlossaryTerm[];    // definitions for jargon used in this entry
+  safety: string[];             // hazard callouts
+  sources?: SafetySourceRef[];  // reuse existing citation type
+}
+
+export interface AlchemyRecipeEntry extends AlchemyEntryBase {
+  kind: "recipe";
+  starterDraft: RecipeDraft;    // complete, engine-valid draft (powers "Load into Formulator")
+}
+
+export interface AlchemyTechniqueEntry extends AlchemyEntryBase {
+  kind: "technique";
+  appliesTo?: string[];         // ids of related recipe entries
+}
+
+export type AlchemyEntry = AlchemyRecipeEntry | AlchemyTechniqueEntry;
+
 // Honest server-side activity log — records real API events (compiles, saves,
 // deletes) so the workshop has an auditable trail. No fabricated "threats".
 export interface ActivityEvent {
