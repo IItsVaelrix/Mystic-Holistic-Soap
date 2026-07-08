@@ -8,7 +8,7 @@ import { FlaskConical, Package, Plus, Trash2, Copy, Heart, Layers, ScrollText } 
 import { RecipeDraft, InventoryItem, AlkaliType } from "./types";
 import RecipeBuilder from "./components/RecipeBuilder";
 import InventoryManager from "./components/InventoryManager";
-import ActivityLog from "./components/ThreatTelemetry";
+import ActivityLog from "./components/ActivityLog";
 
 type Tab = "formulator" | "inventory" | "activity";
 

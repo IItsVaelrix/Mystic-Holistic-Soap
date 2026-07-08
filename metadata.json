@@ -2,5 +2,5 @@
   "name": "Soap Making App V1",
   "description": "Deterministic formulation and safety-aware recipe engine for cold and hot process soap making, featuring a bytecode calculation compiler, chemical hazard warnings, inventory tracking, and quality forecasts.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }
