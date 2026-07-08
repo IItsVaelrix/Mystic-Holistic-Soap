@@ -9,7 +9,7 @@ import { AlchemyDifficulty } from "../types";
 const DIFFICULTY_COLOR: Record<AlchemyDifficulty, string> = {
   beginner: "text-cool border-cool/40 bg-cool/10",
   intermediate: "text-caustic border-caustic/40 bg-caustic/10",
-  advanced: "text-warn border-warn/40 bg-warn/40"
+  advanced: "text-warn border-warn/40 bg-warn/10"
 };
 
 export default function DifficultyBadge({ difficulty, className }: { difficulty: AlchemyDifficulty; className?: string }) {
