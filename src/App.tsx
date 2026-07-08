@@ -356,7 +356,9 @@ export default function App() {
             </div>
           </div>
         ) : activeTab === "alchemy" ? (
-          <AlchemyLab onLoadStarter={handleLoadStarter} />
+          <div className="flex-1 overflow-y-auto scroll-thin-dark bench-grid p-6">
+            <AlchemyLab onLoadStarter={handleLoadStarter} />
+          </div>
         ) : activeTab === "inventory" ? (
           <div className="flex-1 overflow-y-auto scroll-thin-dark bench-grid p-6">
             <InventoryManager inventory={inventory} onAddStock={handleAddStock} onUpdateStock={handleUpdateStock} onDeleteStock={handleDeleteStock} />
