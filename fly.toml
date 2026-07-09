@@ -12,7 +12,15 @@ primary_region = "iad"
   NODE_ENV = "production"
   HOST = "0.0.0.0"
   PORT = "8080"
+  # HTTP Basic Auth username (not secret). The password hash is a Fly secret:
+  #   npm run hash-password -- "<password>"
+  #   fly secrets set AUTH_PASSWORD_HASH="<output>"
+  AUTH_USER = "mystic"
 
+# PUBLIC HTTP service on https://<app>.fly.dev.
+# NOTE: this app ships NO authentication, so a public URL gives anyone who has
+# the link full read/write access to the recipe/inventory API. See the
+# "Optional: password-protect it" note in README.md to lock it down.
 [http_service]
   internal_port = 8080
   force_https = true
@@ -20,13 +28,12 @@ primary_region = "iad"
   auto_start_machines = true
   min_machines_running = 0
 
-# Persist the JSON data store (recipes, inventory, molds, activity) across
-# deploys and restarts. Create the volume first (see README):
-#   fly volumes create soap_data --size 1
-# Remove this block if you are fine with data resetting on every deploy.
-[[mounts]]
-  source = "soap_data"
-  destination = "/app/data"
+# Data is ephemeral (no volume): recipes/inventory/molds reset to the seeded
+# defaults on each deploy. To persist across deploys, add a mount and volume:
+#   [[mounts]]
+#     source = "soap_data"
+#     destination = "/app/data"
+#   # fly volumes create soap_data --size 1 --region iad
 
 [[vm]]
   size = "shared-cpu-1x"

@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
-    "test": "tsx src/lib/soapEngine.additives.test.ts && tsx src/lib/alchemyCatalog.test.ts"
+    "test": "tsx src/lib/soapEngine.additives.test.ts && tsx src/lib/alchemyCatalog.test.ts",
+    "hash-password": "tsx scripts/hash-password.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",

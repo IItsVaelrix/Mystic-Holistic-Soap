@@ -5,6 +5,7 @@
 
 import express, { Request, Response } from "express";
 import path from "path";
+import crypto from "node:crypto";
 import { createServer as createViteServer } from "vite";
 import { compileRecipeDraft, executeSoapBytecode, generateRecommendations, generateFormulationHash } from "./src/lib/soapEngine";
 import { ServerDb } from "./src/lib/serverDb";
@@ -56,6 +57,44 @@ async function startServer() {
   // not expose an open read/write API to the whole network. Set HOST=0.0.0.0
   // deliberately if you understand the exposure.
   const HOST = process.env.HOST || "127.0.0.1";
+
+  // Optional HTTP Basic Auth gate. When AUTH_PASSWORD_HASH is set (strongly
+  // recommended for any public deployment), every request must present valid
+  // credentials before reaching the app or API. The hash is scrypt in
+  // "saltHex:keyHex" form — generate one with `npm run hash-password -- <pw>`
+  // and store it as a secret (e.g. `fly secrets set AUTH_PASSWORD_HASH=...`),
+  // never in the repo. AUTH_USER is the (non-secret) username.
+  const AUTH_USER = process.env.AUTH_USER || "";
+  const AUTH_PASSWORD_HASH = process.env.AUTH_PASSWORD_HASH || "";
+
+  // Verify a candidate password against the stored scrypt hash in constant time.
+  const verifyPassword = (password: string): Promise<boolean> =>
+    new Promise((resolve) => {
+      const [salt, key] = AUTH_PASSWORD_HASH.split(":");
+      if (!salt || !key) return resolve(false);
+      crypto.scrypt(password, salt, key.length / 2, (err, derived) => {
+        if (err) return resolve(false);
+        const keyBuf = Buffer.from(key, "hex");
+        resolve(keyBuf.length === derived.length && crypto.timingSafeEqual(derived, keyBuf));
+      });
+    });
+
+  if (AUTH_PASSWORD_HASH) {
+    app.use(async (req: Request, res: Response, next) => {
+      const [scheme, encoded] = (req.headers.authorization || "").split(" ");
+      if (scheme === "Basic" && encoded) {
+        const decoded = Buffer.from(encoded, "base64").toString("utf8");
+        const sep = decoded.indexOf(":");
+        const user = sep === -1 ? "" : decoded.slice(0, sep);
+        const pass = sep === -1 ? "" : decoded.slice(sep + 1);
+        if ((!AUTH_USER || user === AUTH_USER) && (await verifyPassword(pass))) return next();
+      }
+      res.set("WWW-Authenticate", 'Basic realm="Saponification Bench", charset="UTF-8"');
+      res.status(401).send("Authentication required.");
+    });
+  } else if (process.env.NODE_ENV === "production") {
+    console.warn("[Saponification Bench] WARNING: AUTH_PASSWORD_HASH is not set — the app is running UNPROTECTED.");
+  }
 
   app.use(express.json({ limit: "256kb" }));
   app.use(express.urlencoded({ extended: true }));

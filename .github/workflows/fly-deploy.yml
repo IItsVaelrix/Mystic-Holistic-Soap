@@ -44,6 +44,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only
+      # --depot=false uses Fly's classic remote builder; the newer Depot builder
+      # has been prone to hanging at "Waiting for depot builder...".
+      - run: flyctl deploy --depot=false
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
