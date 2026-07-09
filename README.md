@@ -152,6 +152,21 @@ fly open      # open the running app in your browser
 - **Changing the port:** update `PORT`/`internal_port` in `fly.toml` and
   `ENV PORT`/`EXPOSE` in the `Dockerfile` together.
 
+### Automatic deploys (optional)
+
+`.github/workflows/fly-deploy.yml` deploys to Fly on every push to `main`, after
+lint, tests, and the build pass. To enable it, add a Fly deploy token as a
+GitHub Actions secret named `FLY_API_TOKEN`:
+
+```bash
+fly tokens create deploy --app <your-app-name>
+gh secret set FLY_API_TOKEN --body "<token>"   # or add it via the repo's Settings → Secrets
+```
+
+Without that secret the `verify` job (lint/test/build) still runs, but the deploy
+step fails. Delete the workflow file if you'd rather deploy manually with
+`fly deploy`.
+
 ## Configuration
 
 Copy `.env.example` to `.env` to override defaults. The app needs **no API keys**;

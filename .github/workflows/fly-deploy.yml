@@ -1,0 +1,49 @@
+# Auto-deploy to Fly.io on every push to main.
+#
+# One-time setup:
+#   1. Create a deploy token scoped to this app:
+#        fly tokens create deploy --app <your-app-name>
+#   2. Add it as a repository secret named FLY_API_TOKEN:
+#        GitHub repo -> Settings -> Secrets and variables -> Actions -> New repository secret
+#      (or: gh secret set FLY_API_TOKEN --body "<token>")
+#
+# The deploy job builds the Dockerfile on Fly's remote builder (--remote-only),
+# so no Docker is needed in the runner.
+
+name: Deploy to Fly.io
+
+on:
+  push:
+    branches: [main]
+
+# Don't run two deploys at once; let an in-flight deploy finish rather than
+# cancelling it mid-rollout.
+concurrency:
+  group: fly-deploy
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Lint, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  deploy:
+    name: Deploy
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
