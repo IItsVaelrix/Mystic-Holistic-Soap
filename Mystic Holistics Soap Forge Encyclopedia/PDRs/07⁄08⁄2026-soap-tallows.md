@@ -114,6 +114,7 @@ averages; a fat varies by source, so these are honestly labeled, not "lab").
 id	name	SAP NaOH	SAP KOH	fatty acids (myr/palm/stear/oleic/lino/linolenic)
 beef_tallow	Beef Tallow	0.140	0.197	3 / 26 / 20 / 43 / 3 / 1
 mutton_tallow	Mutton Tallow	0.138	0.194	6 / 24 / 30 / 36 / 4 / 0
+sheep_tallow	Sheep Tallow	0.138	0.194	6 / 24 / 30 / 36 / 4 / 0
 lard	Lard (Pork)	0.138	0.194	1 / 28 / 14 / 46 / 10 / 0
 chicken_fat	Chicken Fat	0.138	0.194	1 / 22 / 6 / 43 / 20 / 1
 duck_fat	Duck Fat	0.135	0.190	1 / 25 / 8 / 48 / 13 / 1
@@ -123,15 +124,24 @@ Behavior notes: high stearic/palmitic (tallows, mutton especially) → hard,
 long-lasting bars with creamy lather and fast trace; high oleic/linoleic
 (poultry) → softer, more conditioning, higher oxidation/rancidity watch.
 
-8.2 Review-required (registered, BLOCK on use)
+8.2 Review-required registry (registered, BLOCK on use)
 
-reviewRequired = true, no SAP data, sourceConfidence = "unknown".
+reviewRequired = true, no SAP data, sourceConfidence = "unknown". The FULL
+taxonomy is registered (34 entries) so the app can list and plan them, but each
+blocks compilation until measured constants are added. By family:
 
-id	name	family	source
-goat_tallow	Goat Tallow	true_tallow	goat
-deer_tallow	Deer / Venison Tallow	game_tallow	deer
-bear_tallow	Bear Tallow	game_tallow	bear (restricted_wildlife_review)
-rabbit_fat	Rabbit Fat	game_tallow	rabbit
+family	entries
+true_tallow	goat, lamb, bison, buffalo
+game_tallow	deer, bear*, rabbit, elk, moose, caribou, antelope
+lard	leaf_lard, backfat_lard, wild_boar_lard*
+poultry_fat	turkey
+exotic_animal_oil	emu, ostrich, mink*, horse, neatsfoot
+dairy_fat	milk_fat/butterfat, ghee, goat_milk_fat, sheep_milk_fat, butter (short-chain FAs outside the 8-slot model)
+fish_oil	salmon, cod_liver, fish (generic), seal*, whale* (high oxidation / restricted)
+animal_wax	lanolin, wool_grease, bone_grease, marrow_fat (high unsaponifiables — not normal fat math)
+
+* carries restricted_wildlife_review and/or pork religious-sensitivity flags.
+Beeswax is intentionally left to the additive system, not duplicated here.
 
 9. Chemistry / Bytecode
 
@@ -167,17 +177,18 @@ verified_lab > supplier_spec > published_reference > estimated_family_average >
 unknown. V1 verified fats are `published_reference` (honest: not lab-measured).
 Upgrading a fat to `verified_lab` with real constants is a data-only change.
 
-12. Future Scope (registered intent, not built)
+12. Registry status (implemented as review-gated)
 
-From the source notes, later slices — each gated until data exists:
-- Pork specialty (leaf lard, backfat), more true tallows (sheep, bison, buffalo).
-- Poultry (turkey, generic), dairy fats (butterfat, ghee — ghee models cleaner
-  than butter, which carries water/solids).
-- Exotic/luxury oils (emu, ostrich, mink, horse, neatsfoot).
-- Marine oils (salmon, cod-liver, fish) — high oxidation, low-% + antioxidant.
-- Non-triglyceride waxes (lanolin, beeswax, wool grease) — do NOT use generic
-  fat math; high unsaponifiables.
-- Restricted/blocked (seal, whale) — off by default, ethical/legal review.
+The full taxonomy from the source notes is now registered (see §8.2), each entry
+blocking until measured data is added. What remains genuinely future work is the
+*modelling*, not the registration:
+- Dairy fats need short-chain fatty-acid slots (butyric/caproic/caprylic/capric)
+  before their SAP/quality math is trustworthy; until then they block.
+- Animal waxes (lanolin, wool grease) need an unsaponifiables / partial-
+  saponification model; they must NOT use normal fat math, so they block.
+- Marine oils need an oxidation/rancidity model and low-% guidance.
+- Promoting any review-gated fat to compiling is a data-only change: add verified
+  SAP + fatty-acid constants with a source and clear reviewRequired.
 
 13. Acceptance / QA (covered by soapEngine.tallows.test.ts)
 

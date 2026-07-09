@@ -21,10 +21,18 @@ function compile(oils: { ingredientId: string; weightGrams: number }[]) {
   return executeSoapBytecode(opcodes, recipe);
 }
 
-const VERIFIED = ["beef_tallow", "mutton_tallow", "lard", "chicken_fat", "duck_fat", "goose_fat"];
-const REVIEW = ["goat_tallow", "deer_tallow", "bear_tallow", "rabbit_fat"];
+const VERIFIED = ["beef_tallow", "mutton_tallow", "sheep_tallow", "lard", "chicken_fat", "duck_fat", "goose_fat"];
 
 const byId = (id: string) => INGREDIENT_CATALOG.find((i) => i.id === id);
+
+const ANIMAL_FATS = INGREDIENT_CATALOG.filter((i) => (i.tags || []).includes("animal_derived"));
+const REVIEW = ANIMAL_FATS.filter((i) => i.reviewRequired).map((i) => i.id);
+
+// Full registry: the taxonomy is registered, not just the verified slice.
+assert.ok(ANIMAL_FATS.length >= 40, `expected the full animal-fat registry (>=40), got ${ANIMAL_FATS.length}`);
+for (const id of ["whale_oil_historical", "seal_oil", "lanolin", "ghee_bovine", "salmon_oil", "emu_oil", "bison_tallow"]) {
+  assert.ok(byId(id), `full registry must include ${id}`);
+}
 
 // --- Catalog integrity -------------------------------------------------------
 for (const id of VERIFIED) {
@@ -94,4 +102,17 @@ for (const id of REVIEW) {
   );
 }
 
-console.log("soap engine tallow / animal-fat assertions passed");
+// --- Every review-required fat blocks compilation when used -----------------
+for (const id of REVIEW) {
+  const r = compile([
+    { ingredientId: id, weightGrams: 300 },
+    { ingredientId: "coconut_oil", weightGrams: 100 },
+  ]);
+  assert.equal(r.safetyReport.status, "blocked", `${id} must block compilation`);
+  assert.ok(
+    r.safetyReport.warnings.some((w) => w.id === `oil-review-required-${id}` && w.severity === SafetySeverity.BLOCKED),
+    `${id} must emit a BLOCKED review-required warning`,
+  );
+}
+
+console.log(`soap engine tallow / animal-fat assertions passed (${VERIFIED.length} verified, ${REVIEW.length} review-gated)`);

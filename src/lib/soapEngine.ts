@@ -160,9 +160,17 @@ export const INGREDIENT_CATALOG: Ingredient[] = [
     linolenic: 1
   },
 
-  // Rendered animal fats — first verified slice (see soap-tallows PDR).
-  // SAP + fatty-acid values are representative published (SoapCalc-tier) averages;
-  // real fats vary by animal, diet, cut, and rendering, hence sourceConfidence.
+  // ══════════════════════════════════════════════════════════════════════════
+  // RENDERED ANIMAL FATS (TALLOWS)  —  see soap-tallows PDR.
+  // This section is placed above the Liquids and Additives sections, so animal
+  // fats always sort above additives in the ingredient picker.
+  // Verified entries carry representative published (SoapCalc-tier) SAP +
+  // fatty-acid values (real fats vary by animal / diet / cut / rendering).
+  // Every fat WITHOUT verified data is reviewRequired and BLOCKS compilation —
+  // the engine never guesses a SAP value ("no fake precision").
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // ── Verified (published_reference): compile as normal oils ──
   {
     id: "beef_tallow",
     name: "Beef Tallow",
@@ -186,6 +194,26 @@ export const INGREDIENT_CATALOG: Ingredient[] = [
   {
     id: "mutton_tallow",
     name: "Mutton Tallow",
+    type: "oil",
+    tags: ["hard_oil", "hardening", "longevity", "animal_derived", "creamy_lather"],
+    sapNaOH: 0.138,
+    sapKOH: 0.194,
+    lauric: 0,
+    myristic: 6,
+    palmitic: 24,
+    stearic: 30,
+    ricinoleic: 0,
+    oleic: 36,
+    linoleic: 4,
+    linolenic: 0,
+    family: "true_tallow",
+    sourceAnimal: "sheep",
+    dietaryEthicFlags: ["animal_product", "not_vegan"],
+    sourceConfidence: "published_reference"
+  },
+  {
+    id: "sheep_tallow",
+    name: "Sheep Tallow",
     type: "oil",
     tags: ["hard_oil", "hardening", "longevity", "animal_derived", "creamy_lather"],
     sapNaOH: 0.138,
@@ -339,6 +367,52 @@ export const INGREDIENT_CATALOG: Ingredient[] = [
     sourceConfidence: "unknown",
     reviewRequired: true
   },
+
+  // ── Game & uncommon true tallows (no verified data — blocked until measured) ──
+  { id: "lamb_tallow", name: "Lamb Tallow", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "true_tallow", sourceAnimal: "lamb", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "bison_tallow", name: "Bison Tallow", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "true_tallow", sourceAnimal: "bison", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "buffalo_tallow", name: "Buffalo Tallow", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "true_tallow", sourceAnimal: "buffalo", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "elk_tallow", name: "Elk Tallow", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "game_tallow", sourceAnimal: "elk", dietaryEthicFlags: ["animal_product", "wild_game", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "moose_tallow", name: "Moose Tallow", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "game_tallow", sourceAnimal: "moose", dietaryEthicFlags: ["animal_product", "wild_game", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "caribou_tallow", name: "Caribou / Reindeer Tallow", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "game_tallow", sourceAnimal: "caribou", dietaryEthicFlags: ["animal_product", "wild_game", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "antelope_tallow", name: "Antelope Tallow", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "game_tallow", sourceAnimal: "antelope", dietaryEthicFlags: ["animal_product", "wild_game", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+
+  // ── Pork family (lard variants — verified base is "lard"; these need own data) ──
+  { id: "leaf_lard", name: "Leaf Lard", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "lard", sourceAnimal: "pig", dietaryEthicFlags: ["animal_product", "pork", "not_vegan", "religious_sensitivity"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "backfat_lard", name: "Backfat Lard", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "lard", sourceAnimal: "pig", dietaryEthicFlags: ["animal_product", "pork", "not_vegan", "religious_sensitivity"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "wild_boar_lard", name: "Wild Boar Lard", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "lard", sourceAnimal: "boar", dietaryEthicFlags: ["animal_product", "pork", "wild_game", "not_vegan", "religious_sensitivity"], sourceConfidence: "unknown", reviewRequired: true },
+
+  // ── Poultry ──
+  { id: "turkey_fat", name: "Turkey Fat", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "poultry_fat", sourceAnimal: "turkey", dietaryEthicFlags: ["animal_product", "poultry", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+
+  // ── Exotic animal oils ──
+  { id: "emu_oil", name: "Emu Oil", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "exotic_animal_oil", sourceAnimal: "emu", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "ostrich_oil", name: "Ostrich Oil", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "exotic_animal_oil", sourceAnimal: "ostrich", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "mink_oil", name: "Mink Oil", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "exotic_animal_oil", sourceAnimal: "mink", dietaryEthicFlags: ["animal_product", "not_vegan", "restricted_wildlife_review"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "horse_oil", name: "Horse Oil", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "exotic_animal_oil", sourceAnimal: "horse", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "neatsfoot_oil", name: "Neatsfoot Oil", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "exotic_animal_oil", sourceAnimal: "cattle", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+
+  // ── Dairy fats (contain short-chain fatty acids the 8-slot model can't represent) ──
+  { id: "milk_fat_bovine", name: "Milk Fat / Butterfat", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "dairy_fat", sourceAnimal: "cattle", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "ghee_bovine", name: "Ghee / Clarified Butter", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "dairy_fat", sourceAnimal: "cattle", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "goat_milk_fat", name: "Goat Milk Fat", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "dairy_fat", sourceAnimal: "goat", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "sheep_milk_fat", name: "Sheep Milk Fat", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "dairy_fat", sourceAnimal: "sheep", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "butter_unsalted", name: "Butter, Unsalted", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "dairy_fat", sourceAnimal: "cattle", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+
+  // ── Marine oils (high oxidation risk; complex omega-rich profiles outside the model) ──
+  { id: "salmon_oil", name: "Salmon Oil", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "fish_oil", sourceAnimal: "fish", dietaryEthicFlags: ["animal_product", "fish", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "cod_liver_oil", name: "Cod Liver Oil", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "fish_oil", sourceAnimal: "fish", dietaryEthicFlags: ["animal_product", "fish", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "fish_oil_generic", name: "Fish Oil", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "fish_oil", sourceAnimal: "fish", dietaryEthicFlags: ["animal_product", "fish", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+
+  // ── Non-triglyceride animal waxes (high unsaponifiables — NOT normal fat math) ──
+  { id: "lanolin", name: "Lanolin", type: "oil", tags: ["animal_derived", "wax", "review_required"], sapNaOH: 0, sapKOH: 0, family: "animal_wax", sourceAnimal: "sheep", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "wool_grease", name: "Wool Grease", type: "oil", tags: ["animal_derived", "wax", "review_required"], sapNaOH: 0, sapKOH: 0, family: "animal_wax", sourceAnimal: "sheep", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "bone_grease", name: "Bone Grease", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "animal_wax", sourceAnimal: "cattle", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "marrow_fat", name: "Bone Marrow Fat", type: "oil", tags: ["animal_derived", "review_required"], sapNaOH: 0, sapKOH: 0, family: "specialty", sourceAnimal: "cattle", dietaryEthicFlags: ["animal_product", "not_vegan"], sourceConfidence: "unknown", reviewRequired: true },
+
+  // ── Restricted / ethical review (blocked by default; do not enable casually) ──
+  { id: "seal_oil", name: "Seal Oil", type: "oil", tags: ["animal_derived", "restricted", "review_required"], sapNaOH: 0, sapKOH: 0, family: "fish_oil", sourceAnimal: "seal", dietaryEthicFlags: ["animal_product", "not_vegan", "restricted_wildlife_review"], sourceConfidence: "unknown", reviewRequired: true },
+  { id: "whale_oil_historical", name: "Whale Oil (historical)", type: "oil", tags: ["animal_derived", "restricted", "review_required"], sapNaOH: 0, sapKOH: 0, family: "fish_oil", sourceAnimal: "whale", dietaryEthicFlags: ["animal_product", "not_vegan", "restricted_wildlife_review"], sourceConfidence: "unknown", reviewRequired: true },
 
   // Liquids (Water Alternatives)
   {
