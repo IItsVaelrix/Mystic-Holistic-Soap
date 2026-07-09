@@ -211,6 +211,14 @@ export interface Ingredient {
   // Additive characteristics
   timing?: string; // e.g., "At trace", "Mix with lye", "Add to oils"
   chemicallyReactive?: boolean;
+
+  // Provenance / animal-fat metadata (see the soap-tallows PDR). All optional so
+  // existing plant oils and additives are unaffected.
+  family?: string;              // e.g. "true_tallow" | "lard" | "poultry_fat" | "game_tallow"
+  sourceAnimal?: string;        // e.g. "cattle" | "sheep" | "pig" | "chicken"
+  dietaryEthicFlags?: string[]; // e.g. ["animal_product", "beef", "not_vegan", "religious_sensitivity"]
+  sourceConfidence?: "verified_lab" | "supplier_spec" | "published_reference" | "estimated_family_average" | "unknown";
+  reviewRequired?: boolean;     // when true, using this ingredient BLOCKS compilation until verified data is added
 }
 
 export interface RecipeOilItem {

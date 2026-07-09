@@ -160,6 +160,186 @@ export const INGREDIENT_CATALOG: Ingredient[] = [
     linolenic: 1
   },
 
+  // Rendered animal fats — first verified slice (see soap-tallows PDR).
+  // SAP + fatty-acid values are representative published (SoapCalc-tier) averages;
+  // real fats vary by animal, diet, cut, and rendering, hence sourceConfidence.
+  {
+    id: "beef_tallow",
+    name: "Beef Tallow",
+    type: "oil",
+    tags: ["hard_oil", "hardening", "longevity", "animal_derived", "creamy_lather"],
+    sapNaOH: 0.140,
+    sapKOH: 0.197,
+    lauric: 0,
+    myristic: 3,
+    palmitic: 26,
+    stearic: 20,
+    ricinoleic: 0,
+    oleic: 43,
+    linoleic: 3,
+    linolenic: 1,
+    family: "true_tallow",
+    sourceAnimal: "cattle",
+    dietaryEthicFlags: ["animal_product", "beef", "not_vegan"],
+    sourceConfidence: "published_reference"
+  },
+  {
+    id: "mutton_tallow",
+    name: "Mutton Tallow",
+    type: "oil",
+    tags: ["hard_oil", "hardening", "longevity", "animal_derived", "creamy_lather"],
+    sapNaOH: 0.138,
+    sapKOH: 0.194,
+    lauric: 0,
+    myristic: 6,
+    palmitic: 24,
+    stearic: 30,
+    ricinoleic: 0,
+    oleic: 36,
+    linoleic: 4,
+    linolenic: 0,
+    family: "true_tallow",
+    sourceAnimal: "sheep",
+    dietaryEthicFlags: ["animal_product", "not_vegan"],
+    sourceConfidence: "published_reference"
+  },
+  {
+    id: "lard",
+    name: "Lard (Pork)",
+    type: "oil",
+    tags: ["hardening", "conditioning", "animal_derived", "creamy_lather"],
+    sapNaOH: 0.138,
+    sapKOH: 0.194,
+    lauric: 0,
+    myristic: 1,
+    palmitic: 28,
+    stearic: 14,
+    ricinoleic: 0,
+    oleic: 46,
+    linoleic: 10,
+    linolenic: 0,
+    family: "lard",
+    sourceAnimal: "pig",
+    dietaryEthicFlags: ["animal_product", "pork", "not_vegan", "religious_sensitivity"],
+    sourceConfidence: "published_reference"
+  },
+  {
+    id: "chicken_fat",
+    name: "Chicken Fat (Schmaltz)",
+    type: "oil",
+    tags: ["soft_oil", "conditioning", "animal_derived"],
+    sapNaOH: 0.138,
+    sapKOH: 0.194,
+    lauric: 0,
+    myristic: 1,
+    palmitic: 22,
+    stearic: 6,
+    ricinoleic: 0,
+    oleic: 43,
+    linoleic: 20,
+    linolenic: 1,
+    family: "poultry_fat",
+    sourceAnimal: "chicken",
+    dietaryEthicFlags: ["animal_product", "poultry", "not_vegan"],
+    sourceConfidence: "published_reference"
+  },
+  {
+    id: "duck_fat",
+    name: "Duck Fat",
+    type: "oil",
+    tags: ["soft_oil", "conditioning", "animal_derived"],
+    sapNaOH: 0.135,
+    sapKOH: 0.190,
+    lauric: 0,
+    myristic: 1,
+    palmitic: 25,
+    stearic: 8,
+    ricinoleic: 0,
+    oleic: 48,
+    linoleic: 13,
+    linolenic: 1,
+    family: "poultry_fat",
+    sourceAnimal: "duck",
+    dietaryEthicFlags: ["animal_product", "poultry", "not_vegan"],
+    sourceConfidence: "published_reference"
+  },
+  {
+    id: "goose_fat",
+    name: "Goose Fat",
+    type: "oil",
+    tags: ["soft_oil", "conditioning", "animal_derived"],
+    sapNaOH: 0.135,
+    sapKOH: 0.190,
+    lauric: 0,
+    myristic: 1,
+    palmitic: 21,
+    stearic: 6,
+    ricinoleic: 0,
+    oleic: 54,
+    linoleic: 10,
+    linolenic: 1,
+    family: "poultry_fat",
+    sourceAnimal: "goose",
+    dietaryEthicFlags: ["animal_product", "poultry", "not_vegan"],
+    sourceConfidence: "published_reference"
+  },
+
+  // Review-required stubs: registered so the app can list them, but they carry
+  // NO verified SAP/fatty-acid data and BLOCK compilation when used, so the
+  // engine never guesses their chemistry (see soap-tallows PDR "no fake precision").
+  {
+    id: "goat_tallow",
+    name: "Goat Tallow",
+    type: "oil",
+    tags: ["animal_derived", "review_required"],
+    sapNaOH: 0,
+    sapKOH: 0,
+    family: "true_tallow",
+    sourceAnimal: "goat",
+    dietaryEthicFlags: ["animal_product", "not_vegan"],
+    sourceConfidence: "unknown",
+    reviewRequired: true
+  },
+  {
+    id: "deer_tallow",
+    name: "Deer / Venison Tallow",
+    type: "oil",
+    tags: ["animal_derived", "review_required"],
+    sapNaOH: 0,
+    sapKOH: 0,
+    family: "game_tallow",
+    sourceAnimal: "deer",
+    dietaryEthicFlags: ["animal_product", "wild_game", "not_vegan"],
+    sourceConfidence: "unknown",
+    reviewRequired: true
+  },
+  {
+    id: "bear_tallow",
+    name: "Bear Tallow",
+    type: "oil",
+    tags: ["animal_derived", "review_required"],
+    sapNaOH: 0,
+    sapKOH: 0,
+    family: "game_tallow",
+    sourceAnimal: "bear",
+    dietaryEthicFlags: ["animal_product", "wild_game", "not_vegan", "restricted_wildlife_review"],
+    sourceConfidence: "unknown",
+    reviewRequired: true
+  },
+  {
+    id: "rabbit_fat",
+    name: "Rabbit Fat",
+    type: "oil",
+    tags: ["animal_derived", "review_required"],
+    sapNaOH: 0,
+    sapKOH: 0,
+    family: "game_tallow",
+    sourceAnimal: "rabbit",
+    dietaryEthicFlags: ["animal_product", "wild_game", "not_vegan"],
+    sourceConfidence: "unknown",
+    reviewRequired: true
+  },
+
   // Liquids (Water Alternatives)
   {
     id: "distilled_water",
@@ -1301,6 +1481,34 @@ export function executeSoapBytecode(
         sourceRefs: citricRule.sourceRefs
       });
     }
+  }
+
+  // Rule 6: Animal-fat provenance — review gate + labeling advisory (soap-tallows PDR)
+  const usedOilIngredients = recipe.oils
+    .filter((o) => o.weightGrams > 0)
+    .map((o) => INGREDIENT_CATALOG.find((i) => i.id === o.ingredientId))
+    .filter((i): i is Ingredient => Boolean(i));
+
+  for (const ing of usedOilIngredients) {
+    if (ing.reviewRequired) {
+      warnings.push({
+        id: `oil-review-required-${ing.id}`,
+        severity: SafetySeverity.BLOCKED,
+        message: `${ing.name} is review-required: it has no verified saponification/fatty-acid data in the catalog yet. Add measured constants with a source before compiling a recipe that uses it — the engine will not guess its SAP value.`,
+        sourceRefs: []
+      });
+    }
+  }
+
+  const animalOils = usedOilIngredients.filter((i) => (i.dietaryEthicFlags || []).includes("animal_product"));
+  if (animalOils.length > 0) {
+    const religious = animalOils.some((i) => (i.dietaryEthicFlags || []).includes("religious_sensitivity"));
+    warnings.push({
+      id: "animal-derived-fat-labeling",
+      severity: SafetySeverity.INFO,
+      message: `This recipe contains animal-derived fat (${animalOils.map((i) => i.name).join(", ")}). It is not vegan; label clearly if sharing or selling${religious ? ", and note it may carry a religious dietary sensitivity (e.g. pork)" : ""}.`,
+      sourceRefs: []
+    });
   }
 
   const additiveNotices = [
