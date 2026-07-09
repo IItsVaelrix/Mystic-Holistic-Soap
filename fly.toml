@@ -28,12 +28,14 @@ primary_region = "iad"
   auto_start_machines = true
   min_machines_running = 0
 
-# Data is ephemeral (no volume): recipes/inventory/molds reset to the seeded
-# defaults on each deploy. To persist across deploys, add a mount and volume:
-#   [[mounts]]
-#     source = "soap_data"
-#     destination = "/app/data"
-#   # fly volumes create soap_data --size 1 --region iad
+# Persist the JSON data store (recipes, inventory, molds, activity) across
+# deploys and restarts. The volume is mounted where the app writes its data
+# (process.cwd()/data). Created with:
+#   fly volumes create soap_data --size 1 --region iad
+# A single volume means the app must run on ONE machine (see README).
+[[mounts]]
+  source = "soap_data"
+  destination = "/app/data"
 
 [[vm]]
   size = "shared-cpu-1x"
