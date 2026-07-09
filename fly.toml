@@ -1,0 +1,33 @@
+# Fly.io configuration for Saponification Bench.
+# Rename `app` to your own unique Fly app name, and pick a region near you.
+# See the "Deploy to Fly.io" section of README.md for the full walkthrough.
+
+app = "mystic-holistic-soap"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  NODE_ENV = "production"
+  HOST = "0.0.0.0"
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+# Persist the JSON data store (recipes, inventory, molds, activity) across
+# deploys and restarts. Create the volume first (see README):
+#   fly volumes create soap_data --size 1
+# Remove this block if you are fine with data resetting on every deploy.
+[[mounts]]
+  source = "soap_data"
+  destination = "/app/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

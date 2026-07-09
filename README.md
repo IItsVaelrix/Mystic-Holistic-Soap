@@ -96,7 +96,61 @@ npm run start   # node dist/server.cjs
 | `npm run start` | Run the built production server |
 | `npm run preview` | Preview the Vite production build |
 | `npm run lint` | Type-check with `tsc --noEmit` |
+| `npm test` | Run the engine + catalog test suites (via `tsx`) |
 | `npm run clean` | Remove `dist/` and stale build output |
+
+## Deploy to Fly.io
+
+This repo includes a `Dockerfile`, `.dockerignore`, and `fly.toml` for deploying
+to [Fly.io](https://fly.io). The image builds the client and server, runs in
+`NODE_ENV=production` (serving the built `dist/` bundle — no Vite at runtime), and
+binds `0.0.0.0` so Fly can route to it.
+
+> ⚠️ **Read before you deploy — the app has NO authentication.** Every visitor
+> gets full read/write access to the recipe, inventory, and mold API. Deploying
+> to a public URL exposes that API to anyone who finds it. Only host it somewhere
+> you're comfortable being open, or put your own access control in front of it.
+
+### Prerequisites
+- A Fly.io account and [`flyctl`](https://fly.io/docs/flyctl/install/) installed.
+- Log in: `fly auth login`.
+
+### One-time setup
+1. **Name the app and pick a region.** Edit `app` and `primary_region` in
+   `fly.toml` (the `app` name must be globally unique), or let Fly fill them in
+   while keeping the included config:
+   ```bash
+   fly launch --no-deploy --copy-config
+   ```
+   `--copy-config` reuses this `fly.toml` (Dockerfile build + volume mount);
+   decline if it offers to overwrite it.
+2. **Create the data volume (recommended).** The app stores its JSON data
+   (recipes, inventory, molds, activity) under `/app/data`, which `fly.toml`
+   mounts from a volume named `soap_data`:
+   ```bash
+   fly volumes create soap_data --size 1 --region <your-region>
+   ```
+   Use the same region as `primary_region`. Without a volume the data resets to
+   the seeded defaults on every deploy — if that's fine, delete the `[[mounts]]`
+   block from `fly.toml` (otherwise the deploy waits for a volume that isn't
+   there).
+
+### Deploy
+```bash
+fly deploy    # builds the Dockerfile on Fly's remote builder — no local Docker needed
+fly open      # open the running app in your browser
+```
+
+### Notes
+- **Config is already wired:** `fly.toml` sets `NODE_ENV=production`,
+  `HOST=0.0.0.0`, and `PORT=8080`, matching the Dockerfile and the service's
+  `internal_port`.
+- **Keep it to one machine.** The data store is JSON files on a single volume, so
+  a second machine would get its own separate copy. `fly.toml` runs one machine
+  with auto start/stop (`min_machines_running = 0`).
+- **Handy commands:** `fly logs`, `fly status`, `fly secrets set KEY=value`.
+- **Changing the port:** update `PORT`/`internal_port` in `fly.toml` and
+  `ENV PORT`/`EXPOSE` in the `Dockerfile` together.
 
 ## Configuration
 
